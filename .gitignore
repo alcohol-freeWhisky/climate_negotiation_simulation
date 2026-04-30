@@ -21,5 +21,17 @@ env/
 .claude/
 
 outputs/
+poster_figures/
+
+*.pptx
+*.xlsx
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.pdf
+!poster.pdf
+
+proof_of_concept_plan.html
 
 *.log
