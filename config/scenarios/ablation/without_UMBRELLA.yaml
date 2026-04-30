@@ -1,0 +1,176 @@
+scenario_id: article_6_8_nma
+scenario_name: Article 6.8 - Framework for Non-Market Approaches
+description: 'Simulation of negotiations on the framework for non-market approaches
+  (NMA)
+
+  under Article 6.8 of the Paris Agreement. This was one of the more complex
+
+  issues under Article 6, involving debates about the scope, governance,
+
+  and relationship of NMA to market mechanisms.
+
+  '
+active_agents:
+- EU
+- G77_CHINA
+- AOSIS
+- LDC
+- AFRICAN_GROUP
+- LMDC
+- EIG
+draft_text_path: data/draft_texts/article6_8_draft.txt
+reference_text_path: data/final_texts/article6_8_final.txt
+context: 'Article 6.8 of the Paris Agreement recognizes the importance of integrated,
+
+  holistic and balanced non-market approaches (NMA) being available to Parties
+
+  to assist in the implementation of their NDCs, in the context of sustainable
+
+  development and poverty eradication. Article 6.9 defines that a framework
+
+  for non-market approaches to sustainable development shall be defined.
+
+
+  Key unresolved issues include:
+
+  1. Scope of NMA: What activities count as non-market approaches?
+
+  2. Governance: How should the NMA framework be governed?
+
+  3. Relationship to Article 6.2 and 6.4: How do NMA relate to market mechanisms?
+
+  4. Institutional arrangements: What body oversees NMA?
+
+  5. Reporting and review: What transparency provisions apply?
+
+  '
+phase_overrides:
+  informal_consultations:
+    max_rounds: 12
+    key_dispute_points:
+    - scope_and_definition
+    - governance_structure
+    - relationship_to_markets
+    - institutional_home
+    - reporting_requirements
+scenario_constraints:
+  salient_issues:
+  - non_market_approaches
+  - market_mechanisms
+  - finance
+  - transparency
+  - adaptation
+  must_preserve_terms:
+  - sustainable development
+  - poverty eradication
+  - Article 6.8
+  - Article 6.9
+  - non-market approaches
+  - framework
+  - work programme
+  agent_blocking_conditions:
+    EU:
+    - Final text omits environmental integrity safeguards for non-market approaches.
+    - Final text creates a separate framework that duplicates existing Paris Agreement
+      arrangements.
+    - Final text lacks a common framework applicable to all Parties.
+    UMBRELLA:
+    - Final text allows non-market approaches to duplicate or undermine Article 6
+      market approaches.
+    - Final text omits robust accounting, transparency, or environmental integrity
+      safeguards.
+    - Final text creates legally binding finance obligations or dollar amounts for
+      developed countries.
+    EIG:
+    - Final text omits environmental integrity safeguards.
+    - Final text omits robust accounting or transparency safeguards.
+    - Final text allows double counting or undermines Article 6.2 and 6.4 integrity.
+    G77_CHINA:
+    - Final text omits support for developing country Parties, including finance,
+      technology transfer, or capacity-building.
+    - Final text treats non-market approaches as subordinate to market approaches.
+    - Final text omits equity, CBDR-RC, sustainable development, or poverty eradication
+      framing where principles are discussed.
+    LMDC:
+    - Final text treats non-market approaches as subordinate to market approaches.
+    - Final text imposes new binding mitigation or reporting obligations on developing
+      country Parties without support.
+    - Final text omits CBDR-RC or differentiation where obligations are discussed.
+    AOSIS:
+    - Final text omits adaptation, resilience, vulnerable countries, or support benefits
+      from the scope of non-market approaches.
+    - Final text allows non-market approaches to substitute for finance, technology
+      transfer, or capacity-building support.
+    - Final text weakens environmental integrity safeguards.
+    LDC:
+    - Final text omits capacity constraints, adaptation, resilience, or support for
+      vulnerable developing countries.
+    - Final text allows non-market approaches to substitute for finance, technology
+      transfer, or capacity-building support.
+    - Final text creates reporting requirements without flexibility or capacity-building
+      support.
+    AFRICAN_GROUP:
+    - Final text omits adaptation, resilience, development needs, or support for vulnerable
+      developing countries.
+    - Final text allows non-market approaches to constrain African sustainable development.
+    - Final text allows non-market approaches to substitute for finance, technology
+      transfer, or capacity-building support.
+  agent_acceptance_conditions:
+    EU:
+    - Environmental integrity and non-duplication safeguards are present.
+    UMBRELLA:
+    - Non-market approaches remain complementary to, not a substitute for, existing
+      arrangements.
+    EIG:
+    - Environmental integrity and transparency safeguards are present.
+    G77_CHINA:
+    - Developing country support and sustainable development framing are present.
+    LMDC:
+    - NMA is not subordinated to market approaches and differentiation is preserved
+      where obligations are discussed.
+    AOSIS:
+    - The text protects vulnerable countries and does not substitute NMA for support.
+    LDC:
+    - The text recognizes capacity constraints and support needs for vulnerable developing
+      countries.
+    AFRICAN_GROUP:
+    - The text protects adaptation, resilience, development needs, and support for
+      vulnerable developing countries.
+evaluation:
+  key_clauses_to_check:
+  - clause: reference to sustainable development
+    expected: true
+    aliases:
+    - sustainable development
+    - poverty eradication
+  - clause: CBDR or equity reference
+    expected: true
+    aliases:
+    - equity
+    - CBDR-RC
+    - common but differentiated responsibilities
+    - respective capabilities
+  - clause: governance body or committee
+    expected: true
+    aliases:
+    - governance and institutional arrangements
+    - institutional arrangements
+    - Subsidiary Body for Scientific and Technological Advice
+    - SBSTA
+  - clause: work programme
+    expected: true
+    aliases:
+    - work programme
+    - recommendations on the work programme
+  - clause: relationship to Article 6.2 and 6.4
+    expected: true
+    aliases:
+    - Article 6.2
+    - Article 6.4
+    min_numeric_refs: 1
+  - clause: reporting requirements
+    expected: true
+    aliases:
+    - reporting and transparency
+    - transparency of activities and outcomes
+name: Article 6.8 (without UMBRELLA)

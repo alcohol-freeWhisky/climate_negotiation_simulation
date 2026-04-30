@@ -1,0 +1,96 @@
+# =============================================================================
+# Climate Negotiation Simulation - Default Configuration
+# =============================================================================
+
+simulation:
+  name: "COP_Negotiation_Simulation"
+  description: "Multi-agent simulation of UNFCCC climate negotiations"
+  random_seed: 42               # ✅ Used: seeds TurnManager RNG + global random
+  max_total_rounds: 30
+  log_level: "INFO"
+  output_dir: "outputs/"
+
+# LLM Backend Configuration
+llm:
+  provider: "deepseek"
+  # provider: "openai"
+  # provider: "anthropic"
+  model: "deepseek-chat"
+  # model: "gpt-4"
+  # model: "claude-3-5-sonnet"
+  temperature: 0.7
+  max_tokens: 2000               # ✅ Used: default fallback for all phases
+  top_p: 0.95
+  api_key_env: "DEEPSEEK_API_KEY"
+  # api_key_env: "OPENAI_API_KEY"
+  # api_key_env: "ANTHROPIC_API_KEY"
+  requests_per_minute: 20
+  retry_max: 3
+  retry_delay: 5
+
+# Negotiation Process Configuration
+negotiation:
+  phases:
+    opening_statements:
+      enabled: true
+      max_tokens_per_agent: 800         # ✅ Used: caps LLM max_tokens for this phase
+      speaking_order: "alphabetical"    # ✅ Used: "alphabetical" or "random"
+
+    coalition_caucus:
+      enabled: true  # default off
+      use_llm: false  # pure in-memory coalition alignment; set true to enable per-agent LLM reflection
+
+    first_reading:
+      enabled: true
+      max_tokens_per_amendment: 500     # ✅ Used: caps LLM max_tokens for this phase
+      max_amendments_per_agent: 5       # ✅ Used: limits amendments per agent per paragraph
+
+    informal_consultations:
+      enabled: true
+      max_rounds: 15
+      max_tokens_per_statement: 450     # ✅ Used: caps LLM max_tokens for this phase
+      convergence_threshold: 0.8
+      patience: 3
+
+    final_plenary:
+      enabled: true
+      max_tokens_per_statement: 400     # ✅ Used: caps LLM max_tokens for this phase
+      require_consensus: true
+
+  text:
+    bracket_open: "["
+    bracket_close: "]"
+    option_prefix: "Option"
+    preserve_unchanged_paragraphs: true
+    # NOTE: merge_strategy is not yet implemented.
+    # Currently all proposals are listed and sent to chair for synthesis.
+    merge_strategy: "list_all"          # ⚠️ Planned but not yet active
+
+  turns:
+    randomize_order: true               # ✅ Used: enables RNG in speaking order
+    allow_right_of_reply: true          # ✅ Used
+    max_consecutive_passes: 3           # ✅ Used
+
+# Agent defaults
+agent_defaults:
+  temperature: 0.7                      # ✅ Used: fallback for agents without llm_overrides
+  stance_reinforcement_interval: 3      # ✅ Used
+  red_line_critic:
+    enabled: true                       # ✅ Used: checks final plenary responses against scenario guardrails
+    phases: ["final_plenary"]           # Keep critic targeted to control cost
+    max_tokens: 500
+  max_concessions_per_round: 2          # ⚠️ Planned but not yet active
+  stubbornness: 0.5                     # ✅ Used: from agent yaml behavioral_params
+  # NOTE: verbosity is not yet implemented.
+  verbosity: "medium"                   # ⚠️ Planned but not yet active
+
+# Evaluation Configuration
+evaluation:
+  llm_judge_enabled: false
+  metrics:
+    - "rouge_l"
+    - "bertscore"
+    - "key_clause_match"
+    - "bracket_resolution_rate"
+    - "structural_similarity"
+  reference_text_path: null

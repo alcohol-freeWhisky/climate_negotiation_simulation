@@ -185,6 +185,11 @@ python experiments/run_simulation.py \
   --config config/deepseek_config.yaml \
   --scenario config/scenarios/your_scenario.yaml \
   --output outputs/deepseek_run/
+
+# Reproducible run with an explicit seed
+python experiments/run_simulation.py \
+  --scenario config/scenarios/paris_article6_8.yaml \
+  --seed 42
 ```
 
 Priority order for runtime inputs:
@@ -222,6 +227,59 @@ For example, the default run writes to a folder like
 The `--output` flag now sets the output root, and the script still creates
 the per-simulation and per-run subfolders automatically.
 
+### Recently Added Features
+
+#### Scenario-Agnostic Paragraph Preservation
+
+- Draft paragraphs that receive zero amendments are preserved verbatim in the
+  Chair's synthesis and final text.
+- Control this with `text.preserve_unchanged_paragraphs` (default:
+  `true`). In the default repo config layout, that setting is exposed under
+  `negotiation.text`.
+- This is scenario-agnostic: it uses `TextManager` amendment tracking rather
+  than hardcoded paragraph numbers or section names, so it works for any
+  scenario or Article.
+- In practice, this means the preamble, chapeau, or any other untouched draft
+  text will not be accidentally dropped by an over-eager Chair rewrite.
+
+#### Reproducible Runs With `--seed`
+
+- `experiments/run_simulation.py` now accepts `--seed N`.
+- Example: `python experiments/run_simulation.py --scenario config/scenarios/paris_article6_8.yaml --seed 42`
+- When set, the runtime seeds Python `random`, NumPy, and forwards the same
+  seed to DeepSeek and OpenAI requests. Anthropic requests ignore the seed
+  because that API does not support request seeding.
+- The seed is also written into the run's results JSON, which makes `N >= 5`
+  seed repetitions for ablation studies easier to manage.
+
+#### Optional LLM-As-Judge Second Pass For Stance Consistency
+
+- Set `evaluation.llm_judge_enabled: true` to enable an optional secondary
+  pass over each heuristic-flagged stance violation. The default remains
+  `false` to keep standard runs cheap.
+- When enabled, an LLM reviews each flagged case and confirms or rejects it.
+- Evaluation JSON continues to include `consistency_score` (the existing
+  keyword heuristic) and additionally includes
+  `consistency_score_llm_verified` for the LLM-confirmed subset.
+- This reduces false positives from the heuristic pass, including cases where
+  phrases such as `we welcome` can be misread as contradictions.
+
+#### Optional Coalition Caucus Phase
+
+- Set `negotiation.phases.coalition_caucus.enabled: true` to insert a
+  coalition caucus phase between opening statements and first reading. The
+  default is `false`.
+- Agents are grouped by the transitive closure of
+  `interaction_style.coalition_partners`, and each coalition member receives a
+  `COALITION_ALIGNMENT_NOTE` entry in working memory.
+- The default mode is pure in-memory (`use_llm: false`), which adds zero
+  extra LLM cost. Setting `use_llm: true` makes one LLM call per coalition
+  member for richer internal reflection.
+- This phase is scenario-agnostic because it relies only on the
+  `coalition_partners` YAML field, and it is designed to strengthen coalition
+  behavior and make consultation-phase statements reference allied positions
+  more often.
+
 ### Analyzing Results
 
 ```bash
@@ -258,6 +316,7 @@ climate-negotiation-sim/
 │   ├── agents/                 # BaseAgent, NegotiationAgent, ChairAgent
 │   ├── engine/                 # NegotiationEngine, PhaseManager, TextManager
 │   ├── evaluation/             # NegotiationEvaluator
+│   │   └── llm_judge.py        # Optional second-pass stance consistency verifier
 │   ├── llm/                    # LLMBackend, PromptTemplates
 │   ├── memory/                 # NegotiationMemory
 │   └── utils/                  # Logging utilities
@@ -308,6 +367,10 @@ The system supports multi-dimensional evaluation against reference outcomes:
 1. Create draft text in `data/draft_texts/`.
 2. Create reference text in `data/final_texts/`.
 3. Create `config/scenarios/new_scenario.yaml`.
+4. No extra scenario-specific preservation setting is required: unchanged
+   draft paragraphs are preserved automatically via amendment tracking when
+   `text.preserve_unchanged_paragraphs` remains enabled (the default, exposed
+   under `negotiation.text` in the repo config).
 
 ### Changing LLM Provider
 
